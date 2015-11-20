@@ -1,6 +1,5 @@
 var request = require('request'),
-    Promise = require('bluebird'),
-    token = require('../config').token;
+    Promise = require('bluebird');
 
 function reqOptions(token) {
   return {
@@ -22,7 +21,6 @@ function makeReq(args) {
   return new Promise(function(resolve, reject) {
     request(options, function(err, res, body) {
       if(err) resolve(err);
-      console.log(res.statusCode);
       resolve(body);
     });
   });
@@ -30,12 +28,45 @@ function makeReq(args) {
 
 module.exports = (function() {
   var handler = {};
-  handler.sendMessage = function(args) {
-    return makeReq(args);
+
+  handler.createRoom = function(room, token) {
+    return makeReq({
+      token: token,
+      path: '/rooms',
+      method: 'POST',
+      body: room
+    });
   };
 
-  handler.addUserToRoom = function(args) {
-    return makeReq(args);
+  handler.sendMessage = function(message, token) {
+    return makeReq({
+      token: token,
+      path: '/messages',
+      method: 'POST',
+      body: message
+    });
+  };
+
+  handler.getPerson = function(options, token) {
+    var userEmail = options.email;
+    return makeReq({
+      token: token,
+      path: `/people?email=${userEmail}`,
+      method: 'GET'
+    }).then(function(data) {
+      if(data) {
+        return JSON.parse(data);
+      }
+    });
+  };
+
+  handler.addUserToRoom = function(args, token) {
+    return makeReq({
+      token: token,
+      path: `/rooms/${args.roomId}/participants`,
+      method: 'POST',
+      body: args.participants
+    });
   };
   return handler;
 }());
