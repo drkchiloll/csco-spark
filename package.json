@@ -2,12 +2,12 @@
   "name": "csco-spark",
   "version": "1.0.0",
   "description": "A module that performs tasks using the Cisco Spark API",
-  "main": "index.js",
+  "main": "csco-spark.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Sam Womack",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "bluebird": "^3.0.5",
     "request": "^2.65.0"
