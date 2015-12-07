@@ -94,5 +94,15 @@ module.exports = function(params) {
       method: 'DELETE'
     })
   };
+
+  handler.getMessages = function(options) {
+    return makeReq({
+      uri: uri,
+      token: token,
+      path: `/messages?roomId=${options.roomId}`,
+      method: 'GET'
+    });
+  };
+
   return handler;
 };
