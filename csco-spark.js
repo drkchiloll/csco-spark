@@ -1,23 +1,27 @@
 var request = require('request'),
     Promise = require('bluebird');
 
-function reqOptions(token) {
+function reqOptions(options) {
   return {
-    url: 'https://api.ciscospark.com/hydra/api/v1/',
+    url: options.uri,
     headers: {
       'Content-Type' : 'application/json',
       'Accept': 'application/json',
-      'Authorization' : token
+      'Authorization' : options.token
     },
     strictSSL: false
   };
 }
 
 function makeReq(args) {
-  var options = reqOptions(args.token);
+  var options = reqOptions({
+    uri: args.uri, token: args.token
+  });
   options.method = args.method;
   options.url += args.path;
-  options.json = args.body;
+  if(args.body) {
+    options.json = args.body;
+  }
   return new Promise(function(resolve, reject) {
     request(options, function(err, res, body) {
       if(err) resolve(err);
@@ -26,11 +30,15 @@ function makeReq(args) {
   });
 }
 
-module.exports = (function() {
+module.exports = function(params) {
+  var uri = params.uri,
+      token = params.token;
+
   var handler = {};
 
-  handler.createRoom = function(room, token) {
+  handler.createRoom = function(room) {
     return makeReq({
+      uri: uri,
       token: token,
       path: '/rooms',
       method: 'POST',
@@ -38,8 +46,9 @@ module.exports = (function() {
     });
   };
 
-  handler.sendMessage = function(message, token) {
+  handler.sendMessage = function(message) {
     return makeReq({
+      uri: uri,
       token: token,
       path: '/messages',
       method: 'POST',
@@ -47,26 +56,43 @@ module.exports = (function() {
     });
   };
 
-  handler.getPerson = function(options, token) {
+  handler.getPerson = function(options) {
     var userEmail = options.email;
     return makeReq({
+      uri: uri,
       token: token,
       path: `/people?email=${userEmail}`,
       method: 'GET'
-    }).then(function(data) {
-      if(data) {
-        return JSON.parse(data);
-      }
     });
   };
 
-  handler.addUserToRoom = function(args, token) {
+  handler.addMemberToRoom = function(member) {
     return makeReq({
+      uri: uri,
+      token: token,
+      path: '/memberships',
+      method: 'POST',
+      body: member
+    });
+  };
+
+  handler.addUserToRoom = function(args) {
+    return makeReq({
+      uri: uri,
       token: token,
       path: `/rooms/${args.roomId}/participants`,
       method: 'POST',
       body: args.participants
     });
   };
+
+  handler.removeUserFromRoom = function(id) {
+    return makeReq({
+      uri: uri,
+      token: token,
+      path: `/memberships/${id}`,
+      method: 'DELETE'
+    })
+  };
   return handler;
-}());
+};
