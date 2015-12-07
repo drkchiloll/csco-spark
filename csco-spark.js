@@ -95,6 +95,15 @@ module.exports = function(params) {
     })
   };
 
+  handler.getMessage = function(messageId) {
+    return makeReq({
+      uri: uri,
+      token: token,
+      path: `/messages/${messageId}`,
+      method: 'GET'
+    });
+  };
+
   handler.getMessages = function(options) {
     return makeReq({
       uri: uri,
