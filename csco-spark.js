@@ -104,5 +104,15 @@ module.exports = function(params) {
     });
   };
 
+  handler.addWebhook = function(data) {
+    return makeReq({
+      uri: uri,
+      token: token,
+      path: '/webhooks',
+      method: 'POST',
+      body: data
+    });
+  };
+
   return handler;
 };
