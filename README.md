@@ -1,5 +1,11 @@
 # Cisco Spark API Integration
 
+##### Install
+
+```
+npm install --save csco-spark
+```
+
 ##### Usage
 
 ```javascript
