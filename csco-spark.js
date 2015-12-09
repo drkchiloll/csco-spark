@@ -50,7 +50,7 @@ module.exports = function(params) {
     return makeReq({
       uri: uri,
       token: token,
-      path: '/rooms/${roomId}',
+      path: `/rooms/${roomId}`,
       method: 'DELETE'
     });
   };
