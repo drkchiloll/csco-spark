@@ -7,7 +7,7 @@ function reqOptions(options) {
     headers: {
       'Content-Type' : 'application/json',
       'Accept': 'application/json',
-      'Authorization' : 'Bearer' + options.token
+      'Authorization' : 'Bearer ' + options.token
     },
     strictSSL: false
   };
