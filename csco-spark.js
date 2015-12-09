@@ -46,6 +46,15 @@ module.exports = function(params) {
     });
   };
 
+  handler.removeRoom = function(roomId) {
+    return makeReq({
+      uri: uri,
+      token: token,
+      path: '/rooms/${roomId}',
+      method: 'DELETE'
+    });
+  };
+
   handler.sendMessage = function(message) {
     return makeReq({
       uri: uri,
@@ -120,6 +129,15 @@ module.exports = function(params) {
       path: '/webhooks',
       method: 'POST',
       body: data
+    });
+  };
+
+  handler.removeWebHook = function(webhookId) {
+    return makeReq({
+      uri: uri,
+      token: token,
+      path: `/webhooks/${webhookId}`,
+      method: 'DELETE'
     });
   };
 
