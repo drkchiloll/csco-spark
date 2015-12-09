@@ -108,7 +108,7 @@ module.exports = function(params) {
     return makeReq({
       uri: uri,
       token: token,
-      path: `/messages?roomId=${options.roomId}`,
+      path: `/messages?roomId=${options.roomId}&max=1000`,
       method: 'GET'
     });
   };
