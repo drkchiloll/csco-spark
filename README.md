@@ -12,11 +12,18 @@ npm install --save csco-spark
 var sparkFactory = require('spark'),
 
 var spark = sparkFactory({
-  uri: 'spark api url',
-  token: 'bearer token'
+  uri: 'https://api.ciscospark.com/v1',
+  token: 'token'
 });
 
-spark.sendMessage({roomId:'room', text: 'message'}).then(function(res) {
+spark.sendMessage({
+  roomId:'roomId',
+  text: 'message'
+}).then(function(res) {
   //Store the res data?
 });
 ```
+
+##### Special Note
+
+This requires NodeJS version 4+ as it utilizes some ES2015 (ES6) features not found in other versions of Node.
