@@ -72,7 +72,7 @@ module.exports = function(params) {
   handler.getPerson = function(opts) {
     return _handleReq({
       path: (opts.email) ?
-        `/people?email=${userEmail}` :
+        `/people?email=${opts.email}` :
         `/people/${opts.personId}`,
       method: 'GET'
     });
