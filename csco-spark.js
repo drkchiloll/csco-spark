@@ -69,10 +69,11 @@ module.exports = function(params) {
     });
   };
 
-  handler.getPerson = function(options) {
-    var userEmail = options.email;
+  handler.getPerson = function(opts) {
     return _handleReq({
-      path: `/people?email=${userEmail}`,
+      path: (opts.email) ?
+        `/people?email=${userEmail}` :
+        `/people/${opts.personId}`,
       method: 'GET'
     });
   };
