@@ -130,5 +130,34 @@ module.exports = function(params) {
     });
   };
 
+  handler.dlFiles = (uri, authToken) => {
+    var fileName, payload;
+    if(!authToken) authToken = token;
+    return new Promise((resolve, reject) => {
+      request.get({
+        uri: uri,
+        headers: {Authorization: `Bearer ${authToken}`},
+        encoding: 'binary'
+      }, (err, resp, body) => {
+        if(resp.statusCode === 200) {
+          var headerFN = resp.headers['content-disposition'];
+          fileName = headerFN
+            .substring(headerFN.indexOf('"'))
+            .replace(/"/gi, '')
+          var contentType = resp.headers['content-type'];
+          if(contentType.includes('image')) {
+            payload = new Buffer(resp.body, 'binary').toString('base64');
+          } else {
+            payload = new Buffer(resp.body, 'binary');
+          }
+          resolve({
+            fileName: fileName,
+            blob: payload
+          });
+        }
+      })
+    })
+  }
+
   return handler;
 };
