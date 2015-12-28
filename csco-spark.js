@@ -25,10 +25,22 @@ function _makeReq(args) {
   return new Promise(function(resolve, reject) {
     request(options, function(err, res, body) {
       if(err) resolve(err);
-      resolve(body);
+      if(res.headers.link) {
+        return resolve(res);
+      } else {
+        return resolve(body);
+      }
     });
   });
 }
+
+// Helper Function
+
+var getLink = (data) => {
+  return data.split(';')[0]
+    .replace('<', '')
+    .replace('>', '');
+};
 
 module.exports = function(params) {
   var uri = params.uri,
@@ -108,11 +120,74 @@ module.exports = function(params) {
     });
   };
 
+  var handlePaging = (client, args) => {
+    return new Promise((resolve, reject) => {
+      var items = args.items;
+      var link = args.link;
+      (function nextPage() {
+        return client.handlePages(link).then((data) => {
+          items = items.concat(data.items);
+          if(data.link) {
+            link = data.link;
+            nextPage();
+          } else {
+            resolve(items);
+          }
+        })
+      }());
+    })
+  };
+
   handler.getMessages = function(options) {
+    var client = this;
     return _handleReq({
-      path: `/messages?roomId=${options.roomId}&max=1000`,
+      path: `/messages?roomId=${options.roomId}&max=507`,
       method: 'GET'
+    }).then(function(resp) {
+      if(resp.headers) {
+        return handlePaging(client, {
+          items: JSON.parse(resp.body).items,
+          link: getLink(resp.headers.link)
+        });
+      } else {
+        return JSON.parse(resp).items;
+      }
     });
+  };
+
+  handler.getRooms = (options) => {
+    // var client = this;
+    return _handleReq({
+      path: `/rooms?max=5`,
+      method: 'GET'
+    }).then(function(resp) {
+      if(resp.headers) {
+        return handlePaging(this, {
+          items: JSON.parse(resp.body).items,
+          link: getLink(resp.headers.link)
+        });
+      } else {
+        return JSON.parse(resp).items;
+      }
+    }.bind(this));
+  };
+
+  handler.handlePages = (uri) => {
+    return new Promise((resolve, reject) => {
+      request.get({
+        uri: uri,
+        headers: {Authorization: `Bearer ${token}`}
+      }, function(err, res, body) {
+        if(res.headers.link) {
+          resolve({
+            items: JSON.parse(body).items,
+            link: getLink(res.headers.link)
+          });
+        } else {
+          resolve({items: JSON.parse(body).items});
+        }
+      })
+    })
   };
 
   handler.addWebhook = function(data) {
