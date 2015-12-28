@@ -155,8 +155,8 @@ module.exports = function(params) {
     });
   };
 
-  handler.getRooms = (options) => {
-    // var client = this;
+  handler.getRooms = function(options) {
+    var client = this;
     return _handleReq({
       path: `/rooms?max=5`,
       method: 'GET'
@@ -169,7 +169,7 @@ module.exports = function(params) {
       } else {
         return JSON.parse(resp).items;
       }
-    }.bind(this));
+    });
   };
 
   handler.handlePages = (uri) => {
