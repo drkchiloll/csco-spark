@@ -141,7 +141,7 @@ module.exports = function(params) {
   handler.getMessages = function(options) {
     var client = this;
     return _handleReq({
-      path: `/messages?roomId=${options.roomId}&max=507`,
+      path: `/messages?roomId=${options.roomId}&max=200`,
       method: 'GET'
     }).then(function(resp) {
       if(resp.headers) {
@@ -158,7 +158,7 @@ module.exports = function(params) {
   handler.getRooms = function(options) {
     var client = this;
     return _handleReq({
-      path: `/rooms?max=5`,
+      path: `/rooms?max=200`,
       method: 'GET'
     }).then(function(resp) {
       if(resp.headers) {
