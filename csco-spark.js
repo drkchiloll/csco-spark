@@ -15,17 +15,22 @@ function _reqOptions(options) {
 
 function _makeReq(args) {
   var options = _reqOptions({
-    uri: args.uri, token: args.token
+    uri: args.uri,
+    token: args.token
   });
   options.method = args.method;
-  options.url += args.path;
-  if(args.body) {
-    options.json = args.body;
-  }
+  if(args.path) options.url += args.path;
+  if(args.body) options.json = args.body;
+  //Used for File Downloads
+  if(args.encoding) options.encoding = args.encoding;
+  // REQ for Authorize App/Access & Refresh Tokens
+  if(args.content) options.headers['content-type'] =
+    'application/x-www-form-urlencoded';
+
   return new Promise(function(resolve, reject) {
     request(options, function(err, res, body) {
       if(err) resolve(err);
-      if(res.headers.link) {
+      if(res.headers.link || options.encoding) {
         return resolve(res);
       } else {
         return resolve(body);
@@ -48,11 +53,12 @@ module.exports = function(params) {
 
   var _handleReq = (params) => {
     return _makeReq({
-      uri: uri,
-      token: token,
-      path: params.path,
+      uri: params.uri || uri,
+      token: params.token || token,
+      path: params.path || '',
       method: params.method,
-      body: params.body || ''
+      body: params.body || '',
+      encoding: params.encoding || ''
     });
   };
 
@@ -208,31 +214,25 @@ module.exports = function(params) {
   handler.dlFiles = (uri, authToken) => {
     var fileName, payload;
     if(!authToken) authToken = token;
-    return new Promise((resolve, reject) => {
-      request.get({
-        uri: uri,
-        headers: {Authorization: `Bearer ${authToken}`},
-        encoding: 'binary'
-      }, (err, resp, body) => {
-        if(resp.statusCode === 200) {
-          var headerFN = resp.headers['content-disposition'];
-          fileName = headerFN
-            .substring(headerFN.indexOf('"'))
-            .replace(/"/gi, '')
-          var contentType = resp.headers['content-type'];
-          if(contentType.includes('image')) {
-            payload = new Buffer(resp.body, 'binary').toString('base64');
-          } else {
-            payload = new Buffer(resp.body, 'binary');
-          }
-          resolve({
-            fileName: fileName,
-            blob: payload
-          });
-        }
-      })
-    })
-  }
+    return _handleReq({
+      uri: uri,
+      token: authToken,
+      method: 'GET',
+      encoding: 'binary'
+    }).then(function(resp) {
+      var headerFN = resp.headers['content-disposition'];
+      fileName = headerFN
+        .substring(headerFN.indexOf('"'))
+        .replace(/"/gi, '')
+      var contentType = resp.headers['content-type'];
+      if(contentType.includes('image')) {
+        payload = new Buffer(resp.body, 'binary').toString('base64');
+      } else {
+        payload = new Buffer(resp.body, 'binary');
+      }
+      return { fileName: fileName, blob: payload };
+    });
+  };
 
   return handler;
 };
