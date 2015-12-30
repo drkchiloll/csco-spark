@@ -6,15 +6,16 @@ var spark = require('../csco-spark')({
 });
 
 spark.getMessages({roomId: config.roomId}).then(function(data) {
-  var messages = JSON.parse(data).items;
+  var messages = data;
 
   var fileUris = messages
-                .filter((message) => message.files)
-                .map((message) => message.files)
-                .reduce((arr, files) => arr.concat(files), []);
+    .filter((message) => message.files)
+    .map((message) => message.files)
+    .reduce((arr, files) => arr.concat(files), []);
+
   return Promise.each(fileUris, function(uri) {
     return spark.dlFiles(uri).then(function(payload) {
-      console.log(payload);
+      console.log(payload.fileName);
     });
   }).then(function() {
     //Results have been settled
