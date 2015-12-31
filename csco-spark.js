@@ -9,6 +9,7 @@ function _reqOptions(options) {
       'Accept': 'application/json',
       'Authorization' : 'Bearer ' + options.token
     },
+    method: options.method,
     strictSSL: false
   };
 }
@@ -16,16 +17,22 @@ function _reqOptions(options) {
 function _makeReq(args) {
   var options = _reqOptions({
     uri: args.uri,
-    token: args.token
+    token: args.token,
+    method: args.method
   });
-  options.method = args.method;
   if(args.path) options.url += args.path;
   if(args.body) options.json = args.body;
-  //Used for File Downloads
+  // Used for File Downloads
   if(args.encoding) options.encoding = args.encoding;
   // REQ for Authorize App/Access & Refresh Tokens
-  if(args.content) options.headers['content-type'] =
-    'application/x-www-form-urlencoded';
+  if(args.form) {
+    // URLEncoded POST
+    options.headers['content-type'] = 'application/x-www-form-urlencoded';
+    // Remove Token Auhorization
+    delete options.headers.authorization;
+    // Add Form Data to the REQ Options
+    options.form = args.form;
+  }
 
   return new Promise(function(resolve, reject) {
     request(options, function(err, res, body) {
@@ -39,8 +46,7 @@ function _makeReq(args) {
   });
 }
 
-// Helper Function
-
+// Helper Functions
 var getLink = (data) => {
   return data.split(';')[0]
     .replace('<', '')
@@ -58,7 +64,8 @@ module.exports = function(params) {
       path: params.path || '',
       method: params.method,
       body: params.body || '',
-      encoding: params.encoding || ''
+      encoding: params.encoding || '',
+      form: params.form || ''
     });
   };
 
@@ -231,6 +238,27 @@ module.exports = function(params) {
         payload = new Buffer(resp.body, 'binary');
       }
       return { fileName: fileName, blob: payload };
+    });
+  };
+
+  handler.getAccessToken = (params) => {
+    var formFields = {};
+    formFields = {
+      grant_type: params.code ? 'authorization_code': 'refresh_token',
+      client_id: params.id,
+      client_secret: params.secret,
+    };
+    // Get New Access Token or Refresh Token
+    if(params.code) {
+      formFields.code = params.code,
+      formFields.redirect_uri = params.redirectUri
+    } else {
+      formFields.refresh_token = params.refreshToken;
+    }
+    return _handleReq({
+      uri: 'https://api.ciscospark.com/v1/access_token',
+      method: 'POST',
+      form: formFields
     });
   };
 
