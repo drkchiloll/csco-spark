@@ -54,8 +54,8 @@ var getLink = (data) => {
 };
 
 module.exports = function(params) {
-  var uri = params.uri,
-      token = params.token;
+  var uri = params.uri || '',
+      token = params.token || '';
 
   var _handleReq = (params) => {
     return _makeReq({
@@ -244,7 +244,7 @@ module.exports = function(params) {
   handler.getAccessToken = (params) => {
     var formFields = {};
     formFields = {
-      grant_type: params.code ? 'authorization_code': 'refresh_token',
+      grant_type: params.code ? 'authorization_code' : 'refresh_token',
       client_id: params.id,
       client_secret: params.secret,
     };
