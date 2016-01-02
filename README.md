@@ -9,7 +9,7 @@ npm install --save csco-spark
 ##### Usage
 
 ```javascript
-var sparkFactory = require('spark'),
+var sparkFactory = require('csco-spark'),
 
 var spark = sparkFactory({
   uri: 'https://api.ciscospark.com/v1',
