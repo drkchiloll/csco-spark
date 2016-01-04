@@ -45,7 +45,7 @@ spark.addMemberToRoom({
 });
 
 // Download Files from Spark Room
-spark.dlFiles('uri of file location', 'optional token').then((resp) {
+spark.dlFiles('uri of file location', 'optional token').then((resp) => {
   /*
    * RESP is a List of Objects Consisting of the Below:
    * [{fileName: `filename`, blob: `buffered contents of file`}]
