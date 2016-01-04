@@ -218,6 +218,12 @@ module.exports = function(params) {
     });
   };
 
+  handler.getFileUris = (msges) => {
+    return Promise.filter(msges, (msg) => msg.files)
+      .map((msg) => msg.files)
+      .reduce((arr, files) => arr.concat(files));
+  };
+
   handler.dlFiles = (uri, authToken) => {
     var fileName, payload;
     if(!authToken) authToken = token;
