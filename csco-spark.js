@@ -238,7 +238,9 @@ module.exports = function(params) {
         .substring(headerFN.indexOf('"'))
         .replace(/"/gi, '')
       var contentType = resp.headers['content-type'];
-      if(contentType.includes('image')) {
+      // Check for Image/ZIP File Types (convert Buffer to BASE64 String)
+      if(contentType.includes('image') || contentType.includes('zip') ||
+         contentType.includes('octet-stream')) {
         payload = new Buffer(resp.body, 'binary').toString('base64');
       } else {
         payload = new Buffer(resp.body, 'binary');
