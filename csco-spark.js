@@ -203,15 +203,21 @@ module.exports = function(params) {
     })
   };
 
-  handler.addWebhook = function(data) {
+  handler.addWebhook = function(params) {
     return _handleReq({
       path: '/webhooks',
       method: 'POST',
-      body: data
+      body: {
+        name: params.name,
+        targetUrl: params.hookUrl,
+        resource: 'messages',
+        event: 'created',
+        filter: `roomId=${params.roomId}`
+      }
     });
   };
 
-  handler.removeWebHook = function(webhookId) {
+  handler.deleteWebhook = function(webhookId) {
     return _handleReq({
       path: `/webhooks/${webhookId}`,
       method: 'DELETE'
