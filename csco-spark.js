@@ -94,6 +94,13 @@ module.exports = function(params) {
     });
   };
 
+  handler.deleteMessage = (msgId) => {
+    return _handleReq({
+      path: `/messages/${msgId}`,
+      method: `DELETE`
+    });
+  };
+
   handler.getPerson = function(opts) {
     return _handleReq({
       path: (opts.email) ?
