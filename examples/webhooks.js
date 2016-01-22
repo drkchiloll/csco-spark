@@ -1,5 +1,5 @@
 var config = require('./config'),
-    SparkFactory = require('../csco-spark');
+    SparkFactory = require('../index');
 
 var spark = SparkFactory({
   uri: 'https://api.ciscospark.com/v1',

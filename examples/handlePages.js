@@ -1,5 +1,5 @@
 var config = require('./config');
-var spark = require('../csco-spark')({
+var spark = require('../index')({
   uri: 'https://api.ciscospark.com/v1',
   token: config.token
 });
