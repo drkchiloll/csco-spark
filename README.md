@@ -6,6 +6,10 @@
 npm install --save csco-spark
 ```
 
+##### Special Note
+
+** This requires __NodeJS version 4+__ as it utilizes some ES2015 (ES6) features not found in other versions of Node.
+
 ##### Usage
 
 ```javascript
@@ -85,7 +89,3 @@ spark.getAccessToken({
    */
 });
 ```
-
-##### Special Note
-
-This requires NodeJS version 4+ as it utilizes some ES2015 (ES6) features not found in other versions of Node.
