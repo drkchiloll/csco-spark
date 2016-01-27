@@ -10,6 +10,31 @@ npm install --save csco-spark
 
 ** This requires __NodeJS version 4+__ as it utilizes some ES2015 (ES6) features not found in other versions of Node.
 
+##### Listing Rooms, Memberships, Webhooks, People, and Messages
+
+When retrieving a Spark Users Rooms/Memberships, Webhooks, the Messages in a given Spark Room, and the Memberships in a room where you are the Member of, The Spark API uses Pagination to control the response time of a particular API Call.
+
+In the Library I have implemented Pagination in the retrieval of these objects utilizing NodeJS EventEmitters.
+
+```javascript
+var Spark = require('csco-spark');
+var spark = Spark({
+  uri: 'https://api.ciscospark.com/v1',
+  token: 'Spark Access Token'
+});
+// Getting Spark Rooms
+var listRooms = spark.listItemEvt({
+  item: 'rooms',
+  max: '15' || undefined // Default = 50
+});
+// Listen for Rooms
+listRooms.on('rooms', function(rooms) {
+  console.log(rooms)
+});
+```
+
+Refer to the Examples Listings for utilizing the rest..
+
 ##### Usage
 
 ```javascript
