@@ -9,7 +9,7 @@ var spark = SparkFactory({
 spark.addWebhook({
   name: 'pubHooks',
   hookUrl: 'http://45.55.244.195:8181/hooker',
-  roomId: config.roomId
+  roomId: config.expRoomId
 }).then(function(resp) {
   // Do Not have to Perform JSON.parse()
   console.log(resp.id);

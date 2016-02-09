@@ -11,5 +11,5 @@ var getMsges = (id) => spark.getMessages({roomId: id});
 // })
 
 spark.getRooms().then(function(data) {
-  console.log(data.length);
+  console.log(data);
 })
