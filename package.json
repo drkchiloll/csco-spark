@@ -1,6 +1,6 @@
 {
   "name": "csco-spark",
-  "version": "3.0.8",
+  "version": "3.0.9",
   "description": "A module that performs tasks using the Cisco Spark API",
   "main": "index.js",
   "scripts": {
