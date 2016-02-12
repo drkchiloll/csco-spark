@@ -31,6 +31,11 @@ var listRooms = spark.listItemEvt({
 listRooms.on('rooms', function(rooms) {
   console.log(rooms)
 });
+
+listRooms.on('rooms-end', function(rooms) {
+  // Yes I am sending Data on the End Event
+  // I believe most don't
+})
 ```
 
 Refer to the Examples Listings for utilizing the rest..
